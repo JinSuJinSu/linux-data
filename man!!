@@ -1,0 +1,389 @@
+ubuntu 20.04
+windows terminal
+
+
+1. 슬랙으로 들어가 protobuf-2.5.0.tar.gz를 다운받는다.
+2. 리눅스에 local/user 경로에 복사해놓는다.
+3. 압축해제하고 configure 실행한다.(local 에서는 sudo를 붙이고 하는 것에 주의)
+4. sudo make 하기(좀 걸림)
+5. sudo make install
+6. sudo ldconfig
+7. protoc --version으로 버전 확인
+8. appach hadoop 3.2.2 다운(tar.gz 링크 복사 후 리눅스 홈 디렉토리에 wget 링크 붙여넣기)
+9. sudo apt install openjdk-11-jdk
+10. .bashrc에서 JAVA_HOME 변수 등록
+
+vi .bahsrc
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+export PATH=$PATH:$JAVA_HOME/bin
+export CLASS_PATH=.:$JAVA_HOME/lib/tools.jar
+
+export HADOOP_HOME=/home/hjs429/hadoop-3.2.2
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+
+
+
+hjs429@DESKTOP-8MA6SBD:~$ ls -l
+total 388604
+-rw-r--r-- 1 hjs429 hjs429         0 Jun  8 16:48 10
+-rw-r--r-- 1 hjs429 hjs429         0 Jun  8 16:49 40
+-rw-r--r-- 1 hjs429 hjs429       152 Jun  8 16:07 Helloworld.java
+-r-xr-xr-x 1 root   root     2401901 Jun 11 10:33 cd
+-rwxr-xr-x 1 hjs429 hjs429      5214 Jun  8 17:13 english
+drwxr-xr-x 9 hjs429 hjs429      4096 Jan  3 19:11 hadoop-3.2.2
+-rw-r--r-- 1 hjs429 hjs429 395448622 Jan 14 03:48 hadoop-3.2.2.tar.gz
+-rw-r--r-- 1 hjs429 hjs429      5214 Jun  8 17:13 heyyou
+-rw-r--r-- 1 hjs429 hjs429       891 Jun 11 13:38 ls.txt
+-rw-r--r-- 1 hjs429 hjs429      1326 Jun  9 19:27 practice
+-rwxr-xr-x 1 hjs429 hjs429     14264 Jun  8 16:35 practice.txt
+drwxr-xr-x 5 hjs429 hjs429      4096 Jun 10 09:42 script
+-rw-r--r-- 1 hjs429 hjs429      1246 Jun 10 10:10 script.tar.gz
+drwxr-xr-x 2 hjs429 hjs429      4096 Jun 10 14:20 source
+-rw-r--r-- 1 hjs429 hjs429        74 Jun  8 15:26 test
+-rw-r--r-- 1 hjs429 hjs429       525 Jun  9 10:26 test4
+
+
+hjs429@DESKTOP-8MA6SBD:~$ cd hadoop-3.2.2/
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ ls -l
+total 204
+-rw-r--r-- 1 hjs429 hjs429 150569 Dec  6  2020 LICENSE.txt
+-rw-r--r-- 1 hjs429 hjs429  21943 Dec  6  2020 NOTICE.txt
+-rw-r--r-- 1 hjs429 hjs429   1361 Dec  6  2020 README.txt
+drwxr-xr-x 2 hjs429 hjs429   4096 Jan  3 19:11 bin
+drwxr-xr-x 3 hjs429 hjs429   4096 Jan  3 18:29 etc
+drwxr-xr-x 2 hjs429 hjs429   4096 Jan  3 19:11 include
+drwxr-xr-x 3 hjs429 hjs429   4096 Jan  3 19:11 lib
+drwxr-xr-x 4 hjs429 hjs429   4096 Jan  3 19:11 libexec
+drwxr-xr-x 3 hjs429 hjs429   4096 Jan  3 18:29 sbin
+drwxr-xr-x 4 hjs429 hjs429   4096 Jan  3 19:46 share
+
+
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ cd ..
+hjs429@DESKTOP-8MA6SBD:~$ rm hadoop-3.2.2.tar.gz
+rm: remove regular file 'hadoop-3.2.2.tar.gz'? y
+hjs429@DESKTOP-8MA6SBD:~$ ls -l
+total 2416
+
+hjs429@DESKTOP-8MA6SBD:~$ cd hadoop-3.2.2/
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ ll
+total 212
+
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ ls -l bin
+total 1032
+
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ ls -l etc
+total 4
+drwxr-xr-x 3 hjs429 hjs429 4096 Jan  3 19:11 hadoop
+
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ ls -l etc/hadoop
+total 176
+
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ cd etc/hadoop/
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ ls -l
+total 176
+-rw-r--r-- 1 hjs429 hjs429  9213 Jan  3 18:54 capacity-scheduler.xml
+-rw-r--r-- 1 hjs429 hjs429  1335 Jan  3 18:57 configuration.xsl
+-rw-r--r-- 1 hjs429 hjs429  1940 Jan  3 18:54 container-executor.cfg
+-rw-r--r-- 1 hjs429 hjs429   774 Jan  3 18:28 core-site.xml
+
+# is preferable, modify this file accordingly.
+
+###
+# Generic settings for HADOOP
+###
+
+# Technically, the only required environment variable is JAVA_HOME.
+# All others are optional.  However, the defaults are probably not
+# preferred.  Many sites configure these options outside of Hadoop,
+# such as in /etc/profile.d
+
+# The java implementation to use. By default, this environment
+# variable is REQUIRED on ALL platforms except OS X!
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+# Location of Hadoop.  By default, Hadoop will attempt to determine
+# this location based upon its execution path.
+# export HADOOP_HOME=
+
+# Location of Hadoop's configuration information.  i.e., where this
+# file is living. If this is not defined, Hadoop will attempt to
+# locate it based upon its execution path.
+#
+# NOTE: It is recommend that this variable not be set here but in
+# /etc/profile.d or equivalent.  Some options (such as
+# --config) may react strangely otherwise.
+#
+# export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+
+/HADOOP_PID
+# Where (primarily) daemon log files are stored.
+-rw-r--r-- 1 hjs429 hjs429  3999 Jan  3 18:28 hadoop-env.cmd
+-rw-r--r-- 1 hjs429 hjs429 16235 Jan  3 19:11 hadoop-env.sh
+-rw-r--r-- 1 hjs429 hjs429  3321 Jan  3 18:28 hadoop-metrics2.properties
+-rw-r--r-- 1 hjs429 hjs429 11392 Jan  3 18:28 hadoop-policy.xml
+-rw-r--r-- 1 hjs429 hjs429  3414 Jan  3 18:28 hadoop-user-functions.sh.example
+-rw-r--r-- 1 hjs429 hjs429   775 Jan  3 18:32 hdfs-site.xml
+-rw-r--r-- 1 hjs429 hjs429  1484 Jan  3 18:33 httpfs-env.sh
+-rw-r--r-- 1 hjs429 hjs429  1657 Jan  3 18:33 httpfs-log4j.properties
+-rw-r--r-- 1 hjs429 hjs429    21 Jan  3 18:33 httpfs-signature.secret
+-rw-r--r-- 1 hjs429 hjs429   620 Jan  3 18:33 httpfs-site.xml
+
+localhost
+-rw-r--r-- 1 hjs429 hjs429  3518 Jan  3 18:29 kms-acls.xml
+
+-rw-r--r-- 1 hjs429 hjs429  1351 Jan  3 18:29 kms-env.sh
+
+<?xml version="1.0" encoding="UTF-8"?>
+-rw-r--r-- 1 hjs429 hjs429  1860 Jan  3 18:29 kms-log4j.properties
+
+
+-rw-r--r-- 1 hjs429 hjs429   682 Jan  3 18:29 kms-site.xml
+
+<?xml version="1.0"?>
+-rw-r--r-- 1 hjs429 hjs429 14713 Jan  3 18:28 log4j.properties
+
+
+-rw-r--r-- 1 hjs429 hjs429   951 Jan  3 18:57 mapred-env.cmd
+
+
+-rw-r--r-- 1 hjs429 hjs429  1764 Jan  3 18:57 mapred-env.sh
+
+-rw-r--r-- 1 hjs429 hjs429  4113 Jan  3 18:57 mapred-queues.xml.template
+
+
+-rw-r--r-- 1 hjs429 hjs429   758 Jan  3 18:57 mapred-site.xml
+drwxr-xr-x 2 hjs429 hjs429  4096 Jan  3 18:28 shellprofile.d
+-rw-r--r-- 1 hjs429 hjs429  2316 Jan  3 18:28 ssl-client.xml.example
+-rw-r--r-- 1 hjs429 hjs429  2697 Jan  3 18:28 ssl-server.xml.example
+-rw-r--r-- 1 hjs429 hjs429  2642 Jan  3 18:32 user_ec_policies.xml.template
+-rw-r--r-- 1 hjs429 hjs429    10 Jan  3 18:28 workers
+-rw-r--r-- 1 hjs429 hjs429  2250 Jan  3 18:54 yarn-env.cmd
+-rw-r--r-- 1 hjs429 hjs429  6272 Jan  3 18:54 yarn-env.sh
+-rw-r--r-- 1 hjs429 hjs429   690 Jan  3 18:54 yarn-site.xml
+-rw-r--r-- 1 hjs429 hjs429  2591 Jan  3 18:54 yarnservice-log4j.properties
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi hadoop-env.sh
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ ls
+capacity-scheduler.xml      hadoop-user-functions.sh.example  kms-log4j.properties        ssl-client.xml.example
+configuration.xsl           hdfs-site.xml                     kms-site.xml                ssl-server.xml.example
+container-executor.cfg      httpfs-env.sh                     log4j.properties            user_ec_policies.xml.template
+core-site.xml               httpfs-log4j.properties           mapred-env.cmd              workers
+hadoop-env.cmd              httpfs-signature.secret           mapred-env.sh               yarn-env.cmd
+hadoop-env.sh               httpfs-site.xml                   mapred-queues.xml.template  yarn-env.sh
+hadoop-metrics2.properties  kms-acls.xml                      mapred-site.xml             yarn-site.xml
+hadoop-policy.xml           kms-env.sh                        shellprofile.d              yarnservice-log4j.properties
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi masters
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi workers
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi core-site.xml
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi hdfs-site.xml
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi mapred-site.xml
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi mapred-site.xml
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi hdfs-site.xml
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi yarn-site.xml
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$ vi mapred-site.xml
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/etc/hadoop$
+
+
+1. core-site
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/home/hjs429/data/hadoop/tmp</value>
+    </property>
+</configuration>
+
+2. hdfs-sites
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>/home/hjs429/data/hadoop/name-secondary</value>
+    </property>
+    <property>
+        <name>dfs.http.address</name>
+        <value>localhost:50070</value>
+    </property>
+    <property>
+        <name>dfs.secondary.http.address</name>
+        <value>localhost:50090</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/home/hjs429/data/hadoop/namenode</value>
+    </property>
+    <property>
+        <name>dfs.datanode.name.dir</name>
+        <value>/home/hjs429/data/hadoop/datanode</value>
+    </property>
+</configuration>
+
+  3. mapred-sites
+  <configuration>
+      <property>
+          <name>mapreduce.framework.name</name>
+          <value>yarn</value>
+      </property>
+      <property>
+          <name>yarn.app.mapreduce.am.env</name>
+          <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+      </property>
+      <property>
+          <name>mapreduce.map.env</name>
+          <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+      </property>
+      <property>
+          <name>mapreduce.reduce.env</name>
+          <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+      </property>
+  </configuration>
+
+4. yarn-sites
+<configuration>
+
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.aux-service.mapreduce.shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.local-dirs</name>
+        <value>/home/hjs429/data/hadoop/yarn/local</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.fs.state-store.uri</name>
+        <value>/home/hjs429/data/hadoop/yarn/rmstore</value>
+    </property>
+                                                                                                      10,1          16%         <value>/home/hjs429/data/hadoop/yarn/rmstore</value>
+    </property>
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>localhost</value>
+    </property>
+    <property>
+        <name>yarn.web-proxy.address</name>
+        <value>0.0.0.0:8090</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.log-dirs</name>
+        <value>/home/hjs429/data/hadoop/yarn/logs</value>
+    </property>
+<!-- Site specific YARN configuration properties -->
+
+</configuration>
+
+
+
+
+
+
+#export DISPLAY=$(cat /etc/resolv.conf | grep "nameserver" | awk '{print $2}'):0
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH=$PATH:$JAVA_HOME/bin
+hjs429@DESKTOP-8MA6SBD:~$ cd hadoop-3.2.2/
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ ls -l
+total 204
+
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ mkdir pids
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ ls -l
+total 208
+
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ pwd
+/home/hjs429/hadoop-3.2.2
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ cd pids
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/pids$ pwd
+/home/hjs429/hadoop-3.2.2/pids
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2/pids$ cd
+hjs429@DESKTOP-8MA6SBD:~$ ls -l
+total 2416
+
+hjs429@DESKTOP-8MA6SBD:~$ mkdir data
+hjs429@DESKTOP-8MA6SBD:~$ mkdir data/hadoop
+hjs429@DESKTOP-8MA6SBD:~$ mkdir data/hadoop/tmp
+hjs429@DESKTOP-8MA6SBD:~$ cd data/hadoop/tmp
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/tmp$ pwd
+/home/hjs429/data/hadoop/tmp
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/tmp$ cd ..
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ pwd
+/home/hjs429/data/hadoop
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ mkdir name-secondary
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ cd name-secondary/
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/name-secondary$ pwd
+/home/hjs429/data/hadoop/name-secondary
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/name-secondary$ cd ..
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ pwd
+/home/hjs429/data/hadoop
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ mkdir namenode
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ cd namenode/
+
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+".bashrc" 125L, 3979C                                                                                 1,1           Top
+
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/namenode$ pwd
+/home/hjs429/data/hadoop/namenode
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/namenode$ cd ..
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ mkdir datanode
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ ls -l
+total 16
+drwxr-xr-x 2 hjs429 hjs429 4096 Jun 11 15:27 datanode
+drwxr-xr-x 2 hjs429 hjs429 4096 Jun 11 15:18 name-secondary
+drwxr-xr-x 2 hjs429 hjs429 4096 Jun 11 15:25 namenode
+drwxr-xr-x 2 hjs429 hjs429 4096 Jun 11 15:08 tmp
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ mkdir yarn
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ mkdir yarn/local
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop$ cd yarn/local/
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn/local$ PWD
+PWD: command not found
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn/local$ pwd
+/home/hjs429/data/hadoop/yarn/local
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn/local$ cd ..
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn$ mkdir rmstore
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn$ cd rmstore
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn/rmstore$ pwd
+/home/hjs429/data/hadoop/yarn/rmstore
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn/rmstore$ cd ..
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn$ mkdir logs
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn$ cd logs
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn/logs$ pwd
+/home/hjs429/data/hadoop/yarn/logs
+hjs429@DESKTOP-8MA6SBD:~/data/hadoop/yarn/logs$ cd
+hjs429@DESKTOP-8MA6SBD:~$ vi .bashrc
+hjs429@DESKTOP-8MA6SBD:~$ sudo apt purge openjdk-11
