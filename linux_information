@@ -1,0 +1,65 @@
+
+
+
+sudo service ssh start
+리눅스 하둡 시작 전 반드시 시작해야 하는 명령어
+.
+
+bin/hdfs dfs = dfs 커맨드는 파일시스템 쉘을 실행하는 명령어
+
+bin/hdfs dfs -ls = 데이터 연결에 사용한 input output 디렉토리가 들어있음
+
+bin/hdfs dfs -mkdir air-input
+hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ bin/hdfs dfs put /mnt/d/AIR/* air-input
+
+
+시작 명령어
+sbin/strat-dfs.sh
+sbin/strat-yarn.sh
+mapred historyserver start&
+
+
+
+종료 명령어
+
+kill -9 jobhistoryserver number
+sbin/stop-yarn.sh
+sbin/stop-dfs.sh
+
+
+위의 명령어를 쓰지 않고 프로그램을 끄면 나중에 큰 문제가 생길 수 있으니
+반드시 끈다.
+
+
+put 샘플 명령(로컬에 있는 파일을 hdfs에 붙여넣기)
+bin/hdfs dfs -put /mnt/d/AIR/* air-input
+
+
+리눅스 자바 하둡 실행 명령어
+bin/yarn jar /mnt/c/jinsu-linux/hadoopmr-0.0.1.jar
+com.adacho.driver.DepartureDelayCount air-input dep-delay-count
+
+정리하자면(hadoop에 들어간 상태)
+bin/yarn jar +  hadoopmr.jar 파일 경로 + 자바 파일 경로(패키지,클래스)
++ input 파일 + output 파일
+
+
+
+조건을 주고 리눅스에서 하둡을 실행시
+bin/yarn jar /mnt/c/jinsu-linux/hadoopmr-0.0.1.jar
+com.adacho.driver.DelayCount -D workType=departure
+air-input arrival-delay-count
+
+정리하자면(hadoop에 들어간 상태)
+bin/yarn jar +  hadoopmr.jar 파일 경로 + 자바 파일 경로(패키지,클래스)
+ +-D workType=조건값 + input 파일 + output 파일
+
+
+
+# 필기 시험 꼭 나오는 문제
+1. gcc 해더 파일 지정 옵션
+2. ls 관련 옵션
+3. vi 관련 명령어 3개
+4. more less 관련
+5. (hadoop profile, bashrc), (home profile, bashrc) 관련 문제
+6. gcc 관련 옵션
