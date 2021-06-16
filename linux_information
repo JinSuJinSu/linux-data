@@ -3,20 +3,17 @@
 
 sudo service ssh start
 리눅스 하둡 시작 전 반드시 시작해야 하는 명령어
-.
 
 bin/hdfs dfs = dfs 커맨드는 파일시스템 쉘을 실행하는 명령어
 
 bin/hdfs dfs -ls = 데이터 연결에 사용한 input output 디렉토리가 들어있음
 
-bin/hdfs dfs -mkdir air-input
-hjs429@DESKTOP-8MA6SBD:~/hadoop-3.2.2$ bin/hdfs dfs put /mnt/d/AIR/* air-input
-
 
 시작 명령어
-sbin/strat-dfs.sh
-sbin/strat-yarn.sh
-mapred historyserver start&
+sbin/start-dfs.sh
+sbin/start-yarn.sh
+새터미널 연 후에 bin/mapred historyserver start&
+(터미널 안열고 하면 나중에 겁나 귀찮다)
 
 
 
@@ -30,6 +27,7 @@ sbin/stop-dfs.sh
 위의 명령어를 쓰지 않고 프로그램을 끄면 나중에 큰 문제가 생길 수 있으니
 반드시 끈다.
 
+bin/hdfs dfs -mkdir air-input
 
 put 샘플 명령(로컬에 있는 파일을 hdfs에 붙여넣기)
 bin/hdfs dfs -put /mnt/d/AIR/* air-input
@@ -56,10 +54,14 @@ bin/yarn jar +  hadoopmr.jar 파일 경로 + 자바 파일 경로(패키지,클�
 
 
 
-# 필기 시험 꼭 나오는 문제
-1. gcc 해더 파일 지정 옵션
-2. ls 관련 옵션
-3. vi 관련 명령어 3개
-4. more less 관련
-5. (hadoop profile, bashrc), (home profile, bashrc) 관련 문제
-6. gcc 관련 옵션
+ 우분투에 mysql 설치하는 방법
+ 1.sudo apt install mysql-server
+
+-여기서부터는 설정 방법임
+홈디렉토리에서 시작한다.
+ 1. sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf 로 파일을 연다.
+ 2. bind-address = 127.0.0.1 이거 #으로 주석처리
+ 3. sudo ufw allow 3306/tcp
+ 4. sudo service mysql start(이거는 mysql 시작할때 항상 써야 하는 명령어임)
+ 5. sudo mkdir /nonexistent(시작할 때 경고 뜰때만 해주면 됨)
+ 6.
