@@ -59,9 +59,143 @@ bin/yarn jar +  hadoopmr.jar 파일 경로 + 자바 파일 경로(패키지,클�
 
 -여기서부터는 설정 방법임
 홈디렉토리에서 시작한다.
- 1. sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf 로 파일을 연다.
- 2. bind-address = 127.0.0.1 이거 #으로 주석처리
- 3. sudo ufw allow 3306/tcp
- 4. sudo service mysql start(이거는 mysql 시작할때 항상 써야 하는 명령어임)
- 5. sudo mkdir /nonexistent(시작할 때 경고 뜰때만 해주면 됨)
- 6.
+1. sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf 로 파일을 연다.
+2. bind-address = 127.0.0.1 이거 #으로 주석처리
+3. sudo ufw allow 3306/tcp
+4. sudo service mysql start(이거는 mysql 시작할때 항상 써야 하는 명령어임)
+    sudo service ssh start(이거 역시 시작해야 함)
+5. sudo mkdir /nonexistent(시작할 때 경고 뜰때만 해주면 됨)
+
+
+아래 4개는 mysql이 제대로 시작됬는지 확인하는 명령어
+ps -ef | grep sshd
+ps -ef | grep mysql
+netstat -an | grep :3306
+netstat -an | grep :22
+
+mysql 접속하는 명령어(root 권한으로)
+sudo mysql
+
+
+
+리눅스 연결 mysql 접속하기
+1. workbrench 다운(만약에 안되면 visual c++ 2015-2019 다운하셈)
+2. local host = 리눅스 ifconfig 집어넣고 username = 리눅스 계정 네임 입력
+3. Connection 네임은 그냥 꼴리는 대로
+
+
+-------------------------------------------------------------------------
+
+ 6번부터는 hive_db 생성 과정
+6. create database hive_db default character set utf8;
+7. create user 'hjs429'@'%' identified by '1234';
+    '@''% : 외부 접속 허용
+8. grant all privileges on hive_db.* to 'hjs429'@'%';
+이거는 모든 권한을 주므로 주의해서 사용
+9. create user 'hjs429'@'localhost' identified by '1234';
+10. grant all privileges on hive_db.* to 'hjs429'@'localhost';
+11. flush privileges; 즉시 적용
+12. mysql -u hjs429 -p 설정이 제대로 됬는지 확인
+
+
+----------------------------------------------------------------------------
+
+13부터는 hive 설치 과정
+13.  wget https://mirror.navercorp.com/apache/hive/hive-3.1.2/
+    apache-hive-3.1.2-bin.tar.gz
+    절대로 src를 가져와선 안된다.
+14. ln -s apache-hive-3.1.2-bin hive
+    필수는 아니지만 편의상 생성
+
+15. mv conf/hive-env.sh.template conf/hive-env.sh 이름 변경
+
+16. vi conf/hive-env.sh HADOOP_HOME을 리눅스에 설정된 경로로 변경
+
+17. mv conf/hive-default.xml.template conf/hive-default.xml
+
+18. cp hive-default.xml hive-site.xml
+
+19. vi hive-site.xml 열고 2번째 줄 제외 전부 지우고
+<configuration>
+    <property>
+        <name>hive.metastore.local</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:mysql://localhost:3306/hive_db?createDatabaseIfNotExist=
+        true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>com.mysql.cj.jdbc.Driver</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionUserName</name>
+        <value>hjs429</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionPassword</name>
+        <value>1234</value>
+    </property>
+    <property>
+        <name>hive.cli.print.header</name>
+        <value>true</value>
+    </property>
+</configuration>
+이거 전체 복사
+20.https://dev.mysql.com/downloads/file/?id=504659 여기 들어가서 다운로드
+21. cp /mnt/c/jinsu-linux/mysql-connector-java-8.0.25.tar.gz . 홈디렉토리로 복사
+22. 압축 해제하고 cd mysql-connector 들어가고 .jar 파일을 hive/lib 안쪽에 복사
+23. hadoop 스위치를 킨다
+24. bin/hdfs dfs -ls /tmp로 들어가봄
+25. bin/hdfs dfs -mkdir /tmp/hjs429 디렉터리 만듬
+26. bin/hdfs dfs -chmod 777 /tmp/hjs429 권한 변경
+27. hive/bin/schematool -initSchema -dbType mysql 최초 1번 초기화
+    만약 에러 나면
+    com.google.common.base.Preconditions.checkArgument
+    (ZLjava/lang/String;Ljava/lang/Object;)V
+
+
+    ~/hadoop-3.2.2/share/hadoop/hdfs/lib$ ls -l guava-27.0-jre.jar
+    /hive/lib$ ls -l guava-19.0.jar
+    이 두개가 일치하지 않아 에러 나는거임
+    hadoop jar 파일을 hive/lib로 복사, 단 이전 버전 지우고 난후
+    지우고 다시 hive/bin/ ./schematool -initSchema -dbType mysql 이럼 끝임
+
+28. ./hive로 실행함 => hive/bin 디렉토리에서 하는거 잊지 말것
+
+
+----------------------------------------------------------------------------
+
+
+
+테이블 생성 명령어
+
+CREATE TABLE airline_delay(YEAR INT, MONTH INT, DAY_OF_MONTH INT, DAY_OF_WEEK INT, FL_DATE STRING, UNIQUE_CARRIER STRING, TAIL_NUM STRING, FL_NUM INT, ORIGIN_AIRPORT_ID INT, ORIGIN STRING, ORIGIN_STATE_ABR STRING, DEST_AIRPORT_ID INT, DEST STRING, DEST_STATE_ABR STRING, CRS_DEP_TIME INT, DEP_TIME INT, DEP_DELAY INT, DEP_DELAY_NEW INT, DEP_DEL15 INT, DEP_DELAY_GROUP INT, TAXI_OUT INT, WHEELS_OFF STRING, WHEELS_ON STRING, TAXI_IN INT, CRS_ARR_TIME INT, ARR_TIME INT, ARR_DELAY INT, ARR_DELAY_NEW INT, ARR_DEL15 INT, ARR_DELAY_GROUP INT, CANCELLED INT, CANCELLATION_CODE STRING, DIVERTED INT, CRS_ELAPSED_TIME INT, ACTUAL_ELAPSED_TIME INT, AIR_TIME INT, FLIGHTS INT, DISTANCE INT, DISTANCE_GROUP INT, CARRIER_DELAY STRING, WEATHER_DELAY STRING, NAS_DELAY STRING, SECURITY_DELAY STRING, LATE_AIRCRAFT_DELAY STRING)
+PARTITIONED BY (delayYear INT)
+위에꺼 전체 긁어서 복사함
+
+아래꺼는 1줄씩 차례대로 복사해준다.
+ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ', '
+    LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+테이블 제대로 생성됬는지 확인하셈
+describe airline_delay;
+
+
+데이터 삽입 명령어(단 추가할때는 overwrite는 절대 사용하지 않는다. 나머지 데이터는 삭제되기 때문)
+hive> load data inpath 'air-input/airOT198907.csv'
+    > overwrite into table airline_delay
+    > partition (delayYear='1989');
+
+    기존 위치에 있던 파일은
+    bin/hdfs dfs -ls /user/hive/warehouse/airline_delay/delayyear=1989
+    해당 위치로 옮겨진다는거 염두해두어야 함
+
+로컬데이터는 inpath가 아닌 local inpat이다.
+
+partition 단위로 데이터 삭제할때
+alter table airline_delay drop partition(delayYear='1998')
