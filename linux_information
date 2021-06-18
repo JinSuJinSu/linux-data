@@ -2,7 +2,7 @@
 
 
 sudo service ssh start
-리눅스 하둡 시작 전 반드시 시작해야 하는 명령어
+리눅스 하둡 시작 전 반드시 시작해야 하는 명령어(mysql도 마찬가지)
 
 bin/hdfs dfs = dfs 커맨드는 파일시스템 쉘을 실행하는 명령어
 
@@ -199,3 +199,44 @@ hive> load data inpath 'air-input/airOT198907.csv'
 
 partition 단위로 데이터 삭제할때
 alter table airline_delay drop partition(delayYear='1998')
+
+여기서부터는 sqoop설치 방법이다
+1. https://mirror.navercorp.com/apache/sqoop/1.4.7/로 먼저 들어간다.
+2. wget https://mirror.navercorp.com/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+3. ln -s sqoop-1.4.7.bin__hadoop-2.6.0 sqoop (편의상 링크 만들어줌)
+4. /sqoop/conf$ cp sqoop-env-template.sh sqoop-env.sh
+5. vi sqoop-env.sh
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+6. /mysql-connector-java-8.0.25$ cp mysql-connector-java-8.0.25.jar ~/sqoop/lib
+7./sqoop/bin$ ./sqoop 이걸로 작동 잘 되는지 확인한다
+8. TPC-H_Tools_v3.0.0 이거 다운받아준다.
+9./data/TPC-H_Tools_v3.0.0/dbgen$ cp makefile.suite Makefile
+10. vi Makefile 확인해준다.
+CC      = gcc
+DATABASE= MYSQL
+MACHINE = LINUX
+WORKLOAD = TPCH
+11. make degen
+12. ./dbgen -s 1
+dss.ddl = 테이블 생성문
+13. mysql -u hjs429 -p tpch_db < dss.ddl
+
+
+
+---------------------------------------------------
+작동 방법
+~/data/TPC-H_Tools_v3.0.0/dbgen$ mysql -u hjs429 -p
+
+데이터 삽입
+use tpch_db;
+load data local infile 'supplier.tbl' into table SUPPLIER fields terminated by '|';
+
+위에 있는 명령어 오류날 경우
+system sudo mysql
+set GLOBAL local_infile=1;
+quit 후 다시
+mysql --local-infile=1 -u hjs429 -p
+use tpch_db;
+load data local infile 'supplier.tbl' into table SUPPLIER fields terminated by '|';
+이렇게 필드별로 하나씩 집어넣는다(네이밍 겹치지 않게 주의)
