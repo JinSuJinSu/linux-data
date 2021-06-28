@@ -240,3 +240,55 @@ mysql --local-infile=1 -u hjs429 -p
 use tpch_db;
 load data local infile 'supplier.tbl' into table SUPPLIER fields terminated by '|';
 이렇게 필드별로 하나씩 집어넣는다(네이밍 겹치지 않게 주의)
+
+
+
+-------------------------
+sqoop 데이터 import 방법
+1. ~/sqoop$ mkdir script
+vi nation_import.sh -< 컬럼 이름으로 지정하면 됨
+2. --where
+n_regionkey < 4(특정 조건)
+3. -- columns (컬럼 순서 지정)
+
+--username
+hjs429
+--password
+1234
+--connect
+jdbc:mysql://localhost:3306/tpch_db
+--table
+NATION
+--split-by
+N_NATIONKEY
+일반적인 틀
+
+
+4.  ../bin/sqoop import --options-file nation_import.sh
+5. 에러 나면 https://mvnrepository.com/artifact/commons-lang/commons-lang/2.6
+에서 jar 파일 다운
+
+sqoop 데이터 export 방법
+1. bin/hdfs dfs -put /mnt/c/jinsu-linux/carriers.csv carrier_code
+2. vi nation_export.sh
+3.--username
+hjs429
+--password
+1234
+--connect
+jdbc:mysql://localhost:3306/tpch_db
+--table
+carrier_code
+--staging-table
+carrier_code_staging
+--clear-staging-table
+--input-fields-terminated-by
+,
+--export-dir
+/user/hjs429/carrier_code
+-m
+1
+
+단, m1은 데이터가 별로 없을 때만 해야하므로 사용시 주의할것
+
+4.

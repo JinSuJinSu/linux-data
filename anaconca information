@@ -1,0 +1,43 @@
+conda env list
+
+가상 환경 만들기
+conda create -n data-anal-env python=3.7
+
+가상 환경 이동
+conda activate data-anal-env
+
+다시 베이스로 이동
+conda deactivate
+
+구글 맵 설치
+conda install googlemaps
+만약 위의 것이 안되면
+
+conda install -c conda-forge googlemaps
+만약 이것도 안되면 마지막으로
+pip install을 쓴다.
+
+
+엑셀 xlsx 형식 파일 안될 때
+conda install openpyxl
+
+
+
+주피터 min-max scaling 사용해야 될 때
+conda install scikit-learn
+
+
+설치
+conda install -c conda-forge folium
+
+
+작동 시간이 필요할 때
+conda install tqdm
+
+
+df.set_index('Rank',inplace=True)
+
+
+1 1 2   1 1
+2 1 1   2 1
+        1 3

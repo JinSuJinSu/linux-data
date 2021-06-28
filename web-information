@@ -1,0 +1,12 @@
+tomcat 설치전 확인
+cd D:\apache-tomcat-9.0.48\
+cd bin
+./startup.bat
+
+자바 tomcat 연동
+sever link 클릭
+
+적당히 하고 프로젝트는 new/dynamic web project로 생성
+src/main/webapp
+파일은 알하서 생성
+server link add후 start버튼 클릭
