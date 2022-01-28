@@ -1,0 +1,19 @@
+리눅스 IP 고정시키기
+IPADDR=192.168.0.66
+NETMASK=255.255.255.0
+GATEWAY=192.168.0.1
+DNS1=168.126.63.1
+DNS2=168.126.63.2
+
+1. cd /etc/sysconfig/network-scripts로 이동
+2. vi ifcfg-enp0s3를 연다.(ifconfig로 전에 확인할 것)
+3. BOORTPROTO를 static으로 바꾼다.
+4. 리눅스 IP 고정시키기를 맨 아래에 붙여넣는다.
+5. /etc/init.d/network restart를 해서 재실행시킨다.
+6. ifconfig가 정상적으로 나오면 성공이다.
+
+톰캣 실행
+tomcat8.5/bin/catalina.sh start
+프로세스 상세 보기
+ps -ef
+netstat -anp | grep 8080 : 포트번호 8080이 열려 있는지 확인

@@ -1,0 +1,20 @@
+[Unit]
+Description=tomcat8
+After=network.target syslog.target
+
+[Service]
+Type=forking
+
+Environment=JAVA_HOME=/usr/local/poscoict/java11
+User=root
+Group=root
+
+ExecStart=/usr/local/poscoict/tomcat8.5/bin/startup.sh
+ExecStop=/usr/local/poscoict/tomcat8.5/bin/shutdown.sh
+
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
